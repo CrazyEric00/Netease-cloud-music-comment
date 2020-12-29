@@ -10,7 +10,7 @@ from scipy.misc import imread
 
 def get_comments(musicid,limit,offset):
     url = 'http://music.163.com/api/v1/resource/comments/R_SO_4_{}?limit={}&offset={}'.format(musicid,limit,offset)
-    payload = {
+    param = {
         'params': 'zWc+6qyuR6DN70+r75okwus9vXUKrVnOfZ8QzSetGWHB9wfWM72MRI0zh3h3bs+GvBv6urFLnHPFEnTploRBJ3n5qydRk3MvO9HVLJ65Z9L1/IPeTeqAJ7fkhkBipPZmgFaAKx7pW1yEogt3CgVawctZy8yeFDVMe2SFpilMzjxK4WBiJd5YdOmWHyBRmIC5',
         'encSecKey': '92343464f303d33a85dbab0c556a61837224d456938b5d952f6b7786538b6439bdd7063141fea1f12eded40722e14472c5e188a8e58f93e72aa52d3b93d1981ca9d2f41622124a3c7d9efe114c5e0b41334ce5a124b5e4ae44cc9eec4ec7a4fbb2693c308b08c90d33c40ad12dde1a1e6c93fdb4b43cc68af100fed6c7eb4988'
     }
@@ -20,7 +20,7 @@ def get_comments(musicid,limit,offset):
         'Host': 'music.163.com',
         'Origin': 'http://music.163.com'
     }
-    response = requests.post(url=url, headers=headers, data=payload)
+    response = requests.post(url=url, headers=headers, data=param)
     data = json.loads(response.text)
     contents=[]
     for s in data['comments']:
@@ -56,8 +56,9 @@ if __name__ == '__main__':
     words_count = all_words.groupby(by=['all_words'])['all_words'].agg({"count": np.size})
     words_count = words_count.reset_index().sort_values(by=["count"], ascending=False)
 
-    mask=imread('girl.png')
-    wordcloud = WordCloud(font_path="simhei.ttf", background_color="white",width=3600,height=1600)
+    mask=imread('CD.png')
+    wordcloud = WordCloud(font_path="simhei.ttf",
+                          background_color="white",max_words=2000,width=3200,height=1800,mask=mask)
     word_frequence = {x[0]: x[1] for x in words_count.head(300).values}
     wordcloud = wordcloud.fit_words(word_frequence)
     plt.imshow(wordcloud)
